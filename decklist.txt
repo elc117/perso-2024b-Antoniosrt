@@ -1,0 +1,33 @@
+Pokémon: 18
+3 Origin Forme Palkia V ASR 39
+2 Origin Forme Palkia VSTAR ASR 40
+3 Duskull BRS 60
+1 Dusclops SFA 19
+2 Dusknoir SFA 20
+1 Froakie OBF 56
+1 Greninja ex TWM 106
+1 Radiant Greninja ASR 46
+1 Bloodmoon Ursaluna ex TWM 141
+1 Squawkabilly ex PAL 169
+1 Fezandipiti ex SFA 38
+1 Mew ex MEW 151
+
+Trainer: 35
+4 Iono PAL 185
+2 Irida ASR 147
+4 Nest Ball SVI 181
+4 Ultra Ball SVI 196
+4 Rare Candy SVI 191
+4 Night Stretcher SFA 61
+2 Trekking Shoes ASR 156
+2 Earthen Vessel PAR 163
+1 Buddy-Buddy Poffin TEF 144
+1 Hisuian Heavy Ball ASR 146
+1 Counter Catcher PAR 160
+1 Prime Catcher TEF 157
+1 Switch SVI 194
+1 Lost Vacuum LOR 162
+3 PokéStop PGO 68
+
+Energy: 7
+7 Water Energy SVE 11

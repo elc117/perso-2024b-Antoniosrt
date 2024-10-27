@@ -1,0 +1,16 @@
+resolver: lts-20.10 # Define o snapshot (versão das bibliotecas) do Stackage
+
+packages:
+  - . # Especifica que o diretório atual contém o código do projeto
+
+extra-deps: [] # Dependências adicionais, se necessárias, que não estão no snapshot
+
+flags: {} # Sinalizadores para módulos ou pacotes específicos
+
+extra-package-dbs: [] # Para pacotes locais adicionais, normalmente não é necessário para projetos simples
+
+# Configurações de opções para o GHC, se precisar de compilações específicas
+ghc-options:
+  '$locals': -Wall # Ativa todos os avisos para os pacotes locais
+
+# Se o projeto usar bibliotecas adicionais, como `wreq`, elas devem estar no `package.yaml`

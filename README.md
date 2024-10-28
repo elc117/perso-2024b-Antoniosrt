@@ -89,6 +89,12 @@ O script Python realiza as seguintes operações:
    stack build
    stack run
    ```
+   Caso esteja rodando no Codespace (o que eu não recomendo pois ele tem que instalar muitas dependências), execute o comando abaixo:
+   ```
+   stack setup --install-ghc
+   stack build --allow-different-user
+   stack run --allow-different-user
+   ```
 
 2. **Preencha o Arquivo `cards.txt` com Dados da API:**  
    Faça uma chamada para a URL de cards da API para que o arquivo `cards.txt` seja preenchido com os dados corretos.

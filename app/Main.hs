@@ -45,23 +45,26 @@ parseLine line
           card_number = read (T.unpack cardNumText) :: Int  -- Converte o número do cartão para Int
       in [Card nameStr quantity card_number]
 
-fetchCard :: Card -> IO (Either String String)
+fetchCard :: Card -> IO (Either (String, Card) (String, Card))
 fetchCard card = do
   response <- makeGetRequest (TS.pack (name card)) (TS.pack (show (cardNumber card)))
   return $ case response of
-    Right jsonResponse -> Right $ formatCardResponse card jsonResponse
-    Left errorMsg -> Left errorMsg
+    Right jsonResponse -> Right (jsonResponse, card)
+    Left errorMsg -> Left (errorMsg, card)
 
 formatCardResponse :: Card -> String -> String
 formatCardResponse card jsonResponse =
   "Card Name: " ++ name card ++ ", Card Number: " ++ show (cardNumber card) ++ ", Total Sets: " ++ jsonResponse
 
-fetchAllCards :: [Card] -> IO [Either String String]
+fetchAllCards :: [Card] -> IO [Either (String, Card) (String, Card)]
 fetchAllCards cards = mapM fetchCard cards
 
 -- Função para salvar os resultados em um arquivo TXT
-saveResultsToTxt :: [String] -> IO ()
-saveResultsToTxt results = writeFile "cards.txt" (unlines results)
+saveResultsToTxt :: [Either (String, Card) (String, Card)] -> IO ()
+saveResultsToTxt results = writeFile "cards.txt" $ unlines $
+  zipWith (\idx result -> case result of
+                            Right (res, card) -> show idx ++ ": quantidade:" ++ show (quantity card) ++ ", nameCorreto:" ++ name card ++ ", numeroCorreto:" ++ show (cardNumber card) ++ ", json:" ++ res
+                            Left (err, card)  -> show idx ++ ": quantidade:" ++ show (quantity card) ++ ", nameCorreto:" ++ name card ++ ", numeroCorreto:" ++ show (cardNumber card) ++ ", Error: " ++ err) [1..] results
 
 main :: IO ()
 main = scotty 3000 $ do
@@ -69,6 +72,5 @@ main = scotty 3000 $ do
     input <- param "data" :: ActionM Text
     let cards = parseCards input
     results <- liftIO $ fetchAllCards cards
-    let formattedResults = [result | Right result <- results]  -- Filtrando apenas os resultados certos
-    liftIO $ saveResultsToTxt formattedResults  -- Salvando resultados em um arquivo TXT
-    json $ object ["cards" .= formattedResults]  -- Retornando resultados como JSON
+    liftIO $ saveResultsToTxt results  -- Salvando resultados em um arquivo TXT
+    json $ object ["cards" .= [result | Right (result, _) <- results]]  -- Retornando resultados como JSON

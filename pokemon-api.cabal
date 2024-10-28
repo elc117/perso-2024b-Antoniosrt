@@ -40,6 +40,7 @@ library
     , http-conduit >=2.3.0
     , lens >=5.1.1
     , lens-aeson >=1.2.2
+    , process
     , scotty >=0.12
     , text >=1.2.5.0
     , wreq >=0.5.3.3
@@ -61,6 +62,7 @@ executable pokemon-api-exe
     , lens >=5.1.1
     , lens-aeson >=1.2.2
     , pokemon-api
+    , process
     , scotty >=0.12
     , text >=1.2.5.0
     , wreq >=0.5.3.3
@@ -83,6 +85,7 @@ test-suite pokemon-api-test
     , lens >=5.1.1
     , lens-aeson >=1.2.2
     , pokemon-api
+    , process
     , scotty >=0.12
     , text >=1.2.5.0
     , wreq >=0.5.3.3

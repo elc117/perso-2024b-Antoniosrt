@@ -30,6 +30,7 @@ dependencies:
   - aeson
   - http-conduit >= 2.3.0
   - case-insensitive
+  - process
 ghc-options:
   - -Wall
   - -Wcompat

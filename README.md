@@ -1,7 +1,17 @@
 # Programa de Processamento de Cartas Pokémon
 
+---
+
+## Identificação
+**Nome:** Antônio Sérgio Rodrigues Tolio  
+**Curso:** Sistemas de Informação  
+
+---
+
 ## Visão Geral
-Este projeto processa dados de cartas Pokémon usando um programa Haskell e um script Python. Juntos, esses componentes leem dados de entrada, consultam uma API para obter detalhes das cartas, formatam as informações e geram um arquivo final com os dados processados.
+Este projeto processa dados de cartas Pokémon usando um programa Haskell e um script Python. Esses componentes trabalham juntos para ler dados de entrada, consultar uma API para obter detalhes das cartas, formatar as informações e gerar um arquivo final com os dados processados, que pode ser utilizado no site de compras de cartas [ligapokemon.com.br](https://ligapokemon.com.br).
+
+---
 
 ## Componentes do Projeto
 
@@ -21,6 +31,28 @@ O programa Haskell executa as seguintes tarefas:
      quantidade: quantidade do card, nameCorreto: nome do card, numeroCorreto: numero do card, json: resposta JSON da chamada
      ```
 
+#### Principais Desafios
+Durante o desenvolvimento, encontrei dificuldades com a decodificação do JSON retornado pela função `makeGetRequest`, devido a problemas com a biblioteca Wreq e as palavras reservadas do Haskell. Após muitas tentativas, resolvi o problema usando a biblioteca Aeson para decodificação. Algumas das tentativas de solução estão descritas abaixo.
+
+**Exemplo de Tentativa de Decodificação:**
+   ```
+formatCardResponse card jsonResponse =
+  case decode (B.pack $ map (fromIntegral . fromEnum) jsonResponse) :: Maybe Value of
+    Just val -> case parseMaybe (withObject "root" $ \v -> do
+                                  dataArr <- v .: "data"
+                                  let firstCard = head (dataArr :: [Value])
+                                  withObject "cardData" (\o -> do
+                                    set <- o .: "set"
+                                    total <- set .: "total"
+                                    return $ "Quantidade: " ++ show (quantity card) ++
+                                             ", Nome do Card: " ++ name card ++
+                                             ", Número do Card: " ++ show (cardNumber card) ++
+                                             ", Total de Sets: " ++ show (total :: Int)) firstCard) val of
+      Just result -> Right result
+      Nothing -> Left $ "Falha ao parsear JSON: " ++ jsonResponse
+    Nothing -> Left $ "Falha ao decodificar JSON: " ++ jsonResponse
+   ```
+
 #### Principais Funções do Programa Haskell:
 - `parseCards`: Converte a entrada de texto em uma lista de cartas.
 - `fetchCard`: Consulta a API para obter detalhes da carta.
@@ -28,6 +60,8 @@ O programa Haskell executa as seguintes tarefas:
 - `saveResultsToTxt`: Salva os resultados em `cards.txt`.
 
 ### Script Python
+Foi necessário criar um script Python para processar os dados de cartas Pokémon. O script lê o arquivo `cards.txt`, filtra e formata as informações e salva os resultados em `formatted_cards.txt`. De maneira que não consegui decodificar o JSON retornado pela API no programa Haskell, o script Python foi criado para realizar essa tarefa.
+
 O script Python realiza as seguintes operações:
 
 1. **Leitura do Arquivo:**  
@@ -45,15 +79,19 @@ O script Python realiza as seguintes operações:
 - `process_file`: Processa as linhas do arquivo para extrair as informações.
 - `save_results`: Salva os resultados formatados em `formatted_cards.txt`.
 
+---
+
 ## Como Executar
 
 1. **Execute o Programa Haskell:**  
    Compile e execute o programa Haskell para gerar o arquivo `cards.txt`.
-    ```
-    stack build
-    stack run
-    ```
-2. **Depois disso precisa fazer uma chamada para a URL de cards da API para que o arquivo cards.txt seja preenchido com os dados corretos.**
+   ```
+   stack build
+   stack run
+   ```
+
+2. **Preencha o Arquivo `cards.txt` com Dados da API:**  
+   Faça uma chamada para a URL de cards da API para que o arquivo `cards.txt` seja preenchido com os dados corretos.
    ```
    curl --location 'http://localhost:3000/cards?data=Pok%C3%A9mon%3A%2020%0A4%20Archeops%20SIT%20147%0A3%20Lugia%20V%20SIT%20138%0A3%20Lugia%20VSTAR%20SIT%20139%0A3%20Minccino%20TEF%20136%0A3%20Cinccino%20TEF%20137%0A2%20Lumineon%20V%20BRS%2040%0A%0A' \
    --form 'data="Pokémon: 18
@@ -89,13 +127,15 @@ O script Python realiza as seguintes operações:
 
    Energy: 7
    7 Water Energy SVE 11"'
+
    ```
+
 3. **Execute o Script Python:**  
    Execute o script Python `process_json.py` para ler `cards.txt`, filtrar e formatar os dados, e salvar os resultados em `formatted_cards.txt`.
-
-   ```bash
+   ```
    python3 process_json.py
    ```
+
 
 ## Exemplo de Saída
 
@@ -111,4 +151,16 @@ O script Python realiza as seguintes operações:
 2: 2 Origin Forme Palkia V (039/216)
 ```
 
+---
 
+## Referências e Créditos
+
+- **Referências**:  
+
+  - [Aeson: Parsing JSON in Haskell](https://artyom.me/aeson)
+  - [Wreq Tutorial](http://www.serpentine.com/wreq/tutorial.html)
+  - [Scotty: REST API in Haskell](https://hackage.haskell.org/package/scotty)
+  - [Getting Started with Haskell Projects](https://www.stackbuilders.com/insights/getting-started-with-haskell-projects-using-scotty)
+  - [Stack](https://docs.haskellstack.org/en/stable/README/)
+
+Link do video: https://youtu.be/eLurf0PXIFA
